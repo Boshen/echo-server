@@ -2,14 +2,24 @@
 
 module Lib where
 
-import           Data.Aeson  (Value (..), object, (.=))
-import           Data.Monoid (mconcat)
 import           Web.Scotty
-import qualified Web.Scotty  as S
 
+routes :: ScottyM ()
 routes = do
-  S.get "/" $
-    S.text "hello"
+  get "/echo" $
+    text ""
 
-  S.get "/some-json" $
-    S.json $ object ["foo" .= Number 23, "bar" .= Number 42]
+  post "/echo" $
+    text ""
+
+  put "/echo" $
+    text ""
+
+  patch "/echo" $
+    text ""
+
+  delete "/echo" $
+    text ""
+
+  options "/echo" $
+    text ""

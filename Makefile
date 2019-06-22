@@ -3,3 +3,6 @@ watch:
 
 watch-test:
 	ghcid --warnings --clear --command="ghci test/Spec.hs" --test=":main"
+
+nix:
+	cabal2nix . > project.nix

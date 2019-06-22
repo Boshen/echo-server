@@ -1,11 +1,13 @@
 # Echo Server
 
-development
+A restful server that echoes everything.
+
+## Development
 ```
 make watch
 ```
 
-Test watch
+## Test
 ```
 make test-watch
 ```

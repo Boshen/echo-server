@@ -7,9 +7,10 @@ mkDerivation {
   src = ./.;
   isLibrary = true;
   isExecutable = true;
-  libraryHaskellDepends = [ base ];
+  libraryHaskellDepends = [ base scotty ];
   executableHaskellDepends = [ base scotty ];
   testHaskellDepends = [ base hspec hspec-wai hspec-wai-json ];
   doHaddock = false;
-  license = stdenv.lib.licenses.bsd3;
+  license = "unknown";
+  hydraPlatforms = stdenv.lib.platforms.none;
 }

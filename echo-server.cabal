@@ -8,8 +8,8 @@ version:             0.1.0.0
 -- synopsis:
 -- description:
 -- bug-reports:
-license:             BSD-3-Clause
-license-file:        LICENSE
+-- license:             BSD-3-Clause
+-- license-file:        LICENSE
 author:              Boshen
 maintainer:          boshenc@gmail.com
 -- copyright:
@@ -17,12 +17,10 @@ maintainer:          boshenc@gmail.com
 -- extra-source-files:  CHANGELOG.md
 
 library
-  -- exposed-modules:
-  -- other-modules:
-  -- other-extensions:
-  build-depends:       base ^>=4.12.0.0
-  -- hs-source-dirs:
   default-language:    Haskell2010
+  build-depends:
+    base >=4.12.0.0,
+    scotty
 
 executable echo-server
   default-language: Haskell2010
@@ -31,7 +29,7 @@ executable echo-server
   other-modules:
     Lib
   build-depends:
-    base ^>=4.12.0.0,
+    base >=4.12.0.0,
     scotty
 
 test-suite echo-server-test
@@ -43,8 +41,7 @@ test-suite echo-server-test
   other-modules:
     Lib
   build-depends:
-    base ^>=4.12.0.0,
+    base >=4.12.0.0,
     hspec,
     hspec-wai,
     hspec-wai-json
-

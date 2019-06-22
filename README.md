@@ -2,5 +2,10 @@
 
 development
 ```
-ghcid "--command=ghci test/Spec.hs" --test=":main" --warnings --clear
+make watch
+```
+
+Test watch
+```
+make test-watch
 ```

@@ -1,4 +1,8 @@
 module Main where
 
-main :: IO ()
-main = putStrLn "Hello, Haskell!"
+import           Data.Monoid (mconcat)
+import qualified Web.Scotty  as S
+
+import           Lib
+
+main = S.scotty 3000 Lib.routes

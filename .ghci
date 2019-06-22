@@ -1,3 +1,4 @@
-:set -itest
 :set -ilib
-:load Spec
+:set -itest
+:set -isrc
+:load Main Spec Lib

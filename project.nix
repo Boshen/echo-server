@@ -1,4 +1,6 @@
-{ mkDerivation, base, hspec, stdenv }:
+{ mkDerivation, base, hspec, hspec-wai, hspec-wai-json, scotty
+, stdenv
+}:
 mkDerivation {
   pname = "echo-server";
   version = "0.1.0.0";
@@ -6,8 +8,8 @@ mkDerivation {
   isLibrary = true;
   isExecutable = true;
   libraryHaskellDepends = [ base ];
-  executableHaskellDepends = [ base ];
-  testHaskellDepends = [ base hspec ];
+  executableHaskellDepends = [ base scotty ];
+  testHaskellDepends = [ base hspec hspec-wai hspec-wai-json ];
   doHaddock = false;
   license = stdenv.lib.licenses.bsd3;
 }

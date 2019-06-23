@@ -14,7 +14,7 @@ import qualified Data.ByteString.Lazy as LB
 import qualified Data.CaseInsensitive as CI
 import           Data.Maybe           (fromMaybe)
 import qualified Data.Text            as T
-import           Data.Text.Encoding   (encodeUtf8)
+import           Data.Text.Encoding   (decodeUtf8, encodeUtf8)
 import           Network.HTTP.Types
 import           Network.Wai          (Application)
 import           Network.Wai.Test     hiding (request)
@@ -38,21 +38,22 @@ spec = with app $
         paramStr = T.intercalate "&" $ map (\(k, v) -> T.intercalate "=" [k, v]) params
         path = encodeUtf8 $ T.append "/echo?" paramStr
       in
-      method path `shouldRespondWith` ResponseMatcher 200 [] (bodyEquals (res query Nothing))
+      method path `shouldRespondWith`
+        ResponseMatcher 200 [] (bodyEquals (res Nothing query Nothing))
 
     forM_ (methods [] $ encode payload) $ \(name, method) -> it (name ++ " should reply with payload") $
-      method "/echo" `shouldRespondWith` ResponseMatcher 200 [] (bodyEquals (res Nothing (Just payload)))
+      method "/echo" `shouldRespondWith`
+        ResponseMatcher 200 [] (bodyEquals (res Nothing Nothing (Just payload)))
 
     forM_ (methods extraHeaders "") $ \(name, method) -> it (name ++ " should reply with headers") $
-      method "/echo" `shouldRespondWith`
-        ResponseMatcher
-          200
-          ["Content-Type" <:> "application/json; charset=utf-8", "echo-extra-header" <:> "foo"]
-          (bodyEquals (res Nothing Nothing))
+      let
+        hds = Just $ object $ map (\(k, v) -> (decodeUtf8 k, String . decodeUtf8 $ v)) extraHeaders
+      in
+      method "/echo" `shouldRespondWith` ResponseMatcher 200 [] (bodyEquals (res hds Nothing Nothing))
 
     where
       payload = object ["foo" .= ("bar" :: T.Text)]
-      extraHeaders = [("echo-extra-header", "foo")]
+      extraHeaders = [("echo-extra-header", "foo")] :: [(B.ByteString, B.ByteString)]
 
 methods :: [(B.ByteString, B.ByteString)] -> LB.ByteString -> [(String, B.ByteString -> WaiSession SResponse)]
 methods headers payload =
@@ -70,11 +71,11 @@ methods headers payload =
 req :: Method -> [(B.ByteString, B.ByteString)] -> LB.ByteString -> B.ByteString -> WaiSession SResponse
 req method extraHeaders payload path = request method path headers payload
   where
-    headers = (hContentType, "application/json;") : map (first CI.mk) extraHeaders
+    headers = map (first CI.mk) extraHeaders
 
-res :: Maybe Value -> Maybe Value -> LB.ByteString
-res query payload =
-  encode $ object [ "query" .= m query, "payload" .= m payload ]
+res :: Maybe Value -> Maybe Value -> Maybe Value -> LB.ByteString
+res hds query payload =
+  encode $ object [ "headers" .= m hds, "query" .= m query, "payload" .= m payload ]
   where
     m :: Maybe Value -> Value
     m = fromMaybe (object [])

@@ -7,10 +7,11 @@ import           Data.Aeson
 import qualified Data.Text.Lazy as L
 import           Web.Scotty     as S
 
-toResponse :: ToJSON a => [S.Param] -> a -> Value
-toResponse query payload =
-  object [ "query" .= object (map (\(key, value) -> (L.toStrict key, String $ L.toStrict value)) query)
+toResponse :: ToJSON a => [(L.Text, L.Text)] -> [S.Param] -> a -> Value
+toResponse hds query payload =
+  object [ "headers" .= object (map (\(key, value) -> (L.toStrict key, String $ L.toStrict value)) hds)
          , "payload" .= payload
+         , "query" .= object (map (\(key, value) -> (L.toStrict key, String $ L.toStrict value)) query)
          ]
 
 routes :: ScottyM ()
@@ -19,6 +20,5 @@ routes =
     method "/echo" $ do
       query <- S.params
       payload <- jsonData `rescue` const (return $ object [])
-      headrs <- headers
-      mapM_ (uncurry S.addHeader) (filter (\(k, _) -> L.isPrefixOf "echo" k) headrs)
-      S.json $ toResponse query (payload :: Value)
+      hds <- headers
+      S.json $ toResponse hds query (payload :: Value)

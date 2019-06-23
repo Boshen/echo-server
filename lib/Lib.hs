@@ -2,35 +2,21 @@
 
 module Lib where
 
+import           Control.Monad  (forM_)
 import           Data.Aeson
 import qualified Data.Text.Lazy as L
 import           Web.Scotty     as S
 
-queryToJson :: [S.Param] -> Value
-queryToJson query = object ["params" .= map (\(key, value) -> (L.toStrict key, String $ L.toStrict value)) query]
+toResponse :: ToJSON a => [S.Param] -> a -> Value
+toResponse query payload =
+  object [ "query" .= object (map (\(key, value) -> (L.toStrict key, String $ L.toStrict value)) query)
+         , "payload" .= payload
+         ]
 
 routes :: ScottyM ()
-routes = do
-  S.get "/echo" $ do
-    query <- S.params
-    S.json $ queryToJson query
-
-  S.post "/echo" $ do
-    query <- S.params
-    S.json $ queryToJson query
-
-  S.put "/echo" $ do
-    query <- S.params
-    S.json $ queryToJson query
-
-  S.patch "/echo" $ do
-    query <- S.params
-    S.json $ queryToJson query
-
-  S.delete "/echo" $ do
-    query <- S.params
-    S.json $ queryToJson query
-
-  S.options "/echo" $ do
-    query <- S.params
-    S.json $ queryToJson query
+routes =
+  forM_ [S.get, S.post, S.put, S.patch, S.delete, S.options] $ \method ->
+    method "/echo" $ do
+      query <- S.params
+      payload <- jsonData
+      S.json $ toResponse query (payload :: Value)

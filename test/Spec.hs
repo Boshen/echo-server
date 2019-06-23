@@ -6,10 +6,12 @@ import Test.Hspec
 import Test.Hspec.Wai
 import Test.Hspec.Wai.Matcher
 
+import           Control.Arrow        (first)
 import           Control.Monad        (forM_)
 import           Data.Aeson
 import qualified Data.ByteString      as B
 import qualified Data.ByteString.Lazy as LB
+import qualified Data.CaseInsensitive as CI
 import           Data.Maybe           (fromMaybe)
 import qualified Data.Text            as T
 import           Data.Text.Encoding   (encodeUtf8)
@@ -29,7 +31,7 @@ app = S.scottyApp Lib.routes
 spec :: Spec
 spec = with app $
   describe "Echo /" $ do
-    forM_ (methods "{}") $ \(name, method) -> it (name ++ " should reply with query params") $
+    forM_ (methods [] "{}") $ \(name, method) -> it (name ++ " should reply with query params") $
       let
         params = [("foo", "bar"), ("bar", "baz")] :: [(T.Text, T.Text)]
         query = Just $ object $ map (\(k, v) -> (k, String v)) params
@@ -38,23 +40,37 @@ spec = with app $
       in
       method path `shouldRespondWith` ResponseMatcher 200 [] (bodyEquals (res query Nothing))
 
-    forM_ (methods $ encode payload) $ \(name, method) -> it (name ++ " should reply with payload") $
+    forM_ (methods [] $ encode payload) $ \(name, method) -> it (name ++ " should reply with payload") $
       method "/echo" `shouldRespondWith` ResponseMatcher 200 [] (bodyEquals (res Nothing (Just payload)))
+
+    forM_ (methods extraHeaders "{}") $ \(name, method) -> it (name ++ " should reply with headers") $
+      method "/echo" `shouldRespondWith`
+        ResponseMatcher
+          200
+          ["Content-Type" <:> "application/json; charset=utf-8", "echo-extra-header" <:> "foo"]
+          (bodyEquals (res Nothing Nothing))
+
     where
       payload = object ["foo" .= ("bar" :: T.Text)]
+      extraHeaders = [("echo-extra-header", "foo")]
 
-methods :: LB.ByteString -> [(String, B.ByteString -> WaiSession SResponse)]
-methods payload =
-  [ ("get", req methodGet payload)
-  , ("post", req methodPost payload)
-  , ("put", req methodPut payload)
-  , ("patch", req methodPatch payload)
-  , ("delete", req methodDelete payload)
-  , ("options", req methodOptions payload)
-  ]
+methods :: [(B.ByteString, B.ByteString)] -> LB.ByteString -> [(String, B.ByteString -> WaiSession SResponse)]
+methods headers payload =
+  let
+    r method = req method headers payload
+  in
+    [ ("get", r methodGet)
+    , ("post", r methodPost)
+    , ("put", r methodPut)
+    , ("patch", r methodPatch)
+    , ("delete", r methodDelete)
+    , ("options", r methodOptions)
+    ]
 
-req :: Method -> LB.ByteString -> B.ByteString -> WaiSession SResponse
-req method payload path = request method path [(hContentType, "application/json")] payload
+req :: Method -> [(B.ByteString, B.ByteString)] -> LB.ByteString -> B.ByteString -> WaiSession SResponse
+req method extraHeaders payload path = request method path headers payload
+  where
+    headers = (hContentType, "application/json;") : map (first CI.mk) extraHeaders
 
 res :: Maybe Value -> Maybe Value -> LB.ByteString
 res query payload =

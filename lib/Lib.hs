@@ -2,7 +2,7 @@
 
 module Lib where
 
-import           Control.Monad  (forM_)
+import           Control.Monad
 import           Data.Aeson
 import qualified Data.Text.Lazy as L
 import           Web.Scotty     as S
@@ -19,4 +19,6 @@ routes =
     method "/echo" $ do
       query <- S.params
       payload <- jsonData
+      headrs <- headers
+      mapM_ (uncurry S.addHeader) (filter (\(k, _) -> L.isPrefixOf "echo" k) headrs)
       S.json $ toResponse query (payload :: Value)

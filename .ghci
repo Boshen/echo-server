@@ -2,4 +2,4 @@
 :set -itest
 :set -isrc
 :set -Wall
-:load Main Spec Lib
+:load Main Spec Echo

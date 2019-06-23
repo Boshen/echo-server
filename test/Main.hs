@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Spec(main) where
+module Main(main) where
 
 import Test.Hspec
 import Test.Hspec.Wai
@@ -20,13 +20,13 @@ import           Network.Wai          (Application)
 import           Network.Wai.Test     hiding (request)
 import qualified Web.Scotty           as S
 
-import Lib
+import Echo
 
 main :: IO ()
 main = hspec spec
 
 app :: IO Application
-app = S.scottyApp Lib.routes
+app = S.scottyApp Echo.routes
 
 spec :: Spec
 spec = with app $

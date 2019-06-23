@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Lib where
+module Echo where
 
 import           Control.Monad
 import           Data.Aeson

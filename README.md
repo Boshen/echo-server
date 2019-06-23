@@ -11,3 +11,6 @@ make watch
 ```
 make test-watch
 ```
+
+
+cabal new-install --only-dependencies --enable-tests

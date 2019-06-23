@@ -31,7 +31,7 @@ app = S.scottyApp Lib.routes
 spec :: Spec
 spec = with app $
   describe "Echo /" $ do
-    forM_ (methods [] "{}") $ \(name, method) -> it (name ++ " should reply with query params") $
+    forM_ (methods [] "") $ \(name, method) -> it (name ++ " should reply with query params") $
       let
         params = [("foo", "bar"), ("bar", "baz")] :: [(T.Text, T.Text)]
         query = Just $ object $ map (\(k, v) -> (k, String v)) params
@@ -43,7 +43,7 @@ spec = with app $
     forM_ (methods [] $ encode payload) $ \(name, method) -> it (name ++ " should reply with payload") $
       method "/echo" `shouldRespondWith` ResponseMatcher 200 [] (bodyEquals (res Nothing (Just payload)))
 
-    forM_ (methods extraHeaders "{}") $ \(name, method) -> it (name ++ " should reply with headers") $
+    forM_ (methods extraHeaders "") $ \(name, method) -> it (name ++ " should reply with headers") $
       method "/echo" `shouldRespondWith`
         ResponseMatcher
           200

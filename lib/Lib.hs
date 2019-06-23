@@ -18,7 +18,7 @@ routes =
   forM_ [S.get, S.post, S.put, S.patch, S.delete, S.options] $ \method ->
     method "/echo" $ do
       query <- S.params
-      payload <- jsonData
+      payload <- jsonData `rescue` const (return $ object [])
       headrs <- headers
       mapM_ (uncurry S.addHeader) (filter (\(k, _) -> L.isPrefixOf "echo" k) headrs)
       S.json $ toResponse query (payload :: Value)

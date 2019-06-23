@@ -1,6 +1,4 @@
-{ mkDerivation, base, hspec, hspec-wai, hspec-wai-json, scotty
-, stdenv
-}:
+{ mkDerivation, base, hspec, hspec-wai, scotty, stdenv }:
 mkDerivation {
   pname = "echo-server";
   version = "0.1.0.0";
@@ -9,7 +7,7 @@ mkDerivation {
   isExecutable = true;
   libraryHaskellDepends = [ base scotty ];
   executableHaskellDepends = [ base scotty ];
-  testHaskellDepends = [ base hspec hspec-wai hspec-wai-json ];
+  testHaskellDepends = [ base hspec hspec-wai ];
   doHaddock = false;
   license = "unknown";
   hydraPlatforms = stdenv.lib.platforms.none;

@@ -7,8 +7,8 @@ mkDerivation {
   src = ./.;
   isLibrary = true;
   isExecutable = true;
-  libraryHaskellDepends = [ aeson base scotty text ];
-  executableHaskellDepends = [ aeson base scotty text ];
+  libraryHaskellDepends = [ aeson base http-types scotty text ];
+  executableHaskellDepends = [ aeson base http-types scotty text ];
   testHaskellDepends = [
     aeson base bytestring case-insensitive hspec hspec-wai http-types
     scotty text wai wai-extra

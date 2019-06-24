@@ -51,6 +51,9 @@ spec = with app $
       in
       method "/echo" `shouldRespondWith` ResponseMatcher 200 [] (bodyEquals (res hds Nothing Nothing))
 
+    it "should modify response status" $
+      req methodGet [("echo-status", "400")] "" "/echo" `shouldRespondWith` 400
+
     where
       payload = object ["foo" .= ("bar" :: T.Text)]
       extraHeaders = [("echo-extra-header", "foo")] :: [(B.ByteString, B.ByteString)]

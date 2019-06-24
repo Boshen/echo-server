@@ -4,8 +4,10 @@ module Echo where
 
 import           Control.Monad
 import           Data.Aeson
-import qualified Data.Text.Lazy as L
-import           Web.Scotty     as S
+import qualified Data.Text.Lazy            as L
+import           Data.Text.Read            (decimal)
+import           Network.HTTP.Types.Status (mkStatus, status400)
+import           Web.Scotty                as S
 
 toResponse :: ToJSON a => [(L.Text, L.Text)] -> [S.Param] -> a -> Value
 toResponse hds query payload =
@@ -21,4 +23,13 @@ routes =
       query <- S.params
       payload <- jsonData `rescue` const (return $ object [])
       hds <- headers
+      echoStatus hds
       S.json $ toResponse hds query (payload :: Value)
+
+echoStatus :: [Param] -> ActionM ()
+echoStatus hds =
+  case lookup "echo-status" hds of
+    Nothing -> return ()
+    Just statusText -> S.status $ case decimal (L.toStrict statusText) of
+      Left _       -> status400
+      Right (s, _) -> mkStatus s ""

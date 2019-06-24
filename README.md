@@ -2,6 +2,15 @@
 
 A restful server that echoes everything.
 
+Supports:
+  * `get`, `post`, `put`, `patch`, `delete`, `options` methods
+  * change status code via `echo-status`
+  * displays query params, json payload and headers inside response body
+
+```
+cabal new-install --only-dependencies --enable-tests
+```
+
 ## Development
 ```
 make watch
@@ -12,5 +21,8 @@ make watch
 make test-watch
 ```
 
-
-cabal new-install --only-dependencies --enable-tests
+## Build and Run
+```
+make build
+make run
+```

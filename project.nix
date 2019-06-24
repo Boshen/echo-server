@@ -7,13 +7,12 @@ mkDerivation {
   src = ./.;
   isLibrary = true;
   isExecutable = true;
-  libraryHaskellDepends = [ base ];
+  libraryHaskellDepends = [ aeson base scotty text ];
   executableHaskellDepends = [ aeson base scotty text ];
   testHaskellDepends = [
     aeson base bytestring case-insensitive hspec hspec-wai http-types
     scotty text wai wai-extra
   ];
-  doHaddock = false;
   license = "unknown";
   hydraPlatforms = stdenv.lib.platforms.none;
 }

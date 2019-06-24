@@ -1,5 +1,0 @@
-:set -ilib
-:set -itest
-:set -isrc
-:set -Wall
-:load Main Spec Echo

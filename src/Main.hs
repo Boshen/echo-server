@@ -1,5 +1,7 @@
 module Main(main) where
 
+import Foundation
+
 import qualified Web.Scotty as S
 
 import Echo

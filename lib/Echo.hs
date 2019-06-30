@@ -1,9 +1,10 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Echo where
+
+import Foundation
 
 import           Control.Monad
 import           Data.Aeson
+import           Data.List
 import qualified Data.Text.Lazy            as L
 import           Data.Text.Read            (decimal)
 import           Network.HTTP.Types.Status (mkStatus, status400)

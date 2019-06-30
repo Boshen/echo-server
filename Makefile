@@ -1,14 +1,22 @@
-watch:
+.PHONY : test
+
+start:
 	ghcid --warnings --clear --command="cabal new-repl exe:echo-server" --test="Main.main"
 
-watch-test:
-	ghcid --warnings --clear --command="cabal new-repl echo-server-test" --test="Main.main"
+watch:
+	ghcid --warnings --clear --command="cabal new-repl spec" --test="Main.main"
 
 build:
 	cabal new-build
 
 run:
-	cabal new-run
+	cabal new-run echo-server
+
+test:
+	cabal new-run spec
+
+ci:
+	cabal new-update && make test
 
 nix:
-	cabal2nix . > project.nix
+	hpack && cabal2nix . > project.nix

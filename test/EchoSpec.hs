@@ -1,29 +1,27 @@
-{-# LANGUAGE OverloadedStrings #-}
+module EchoSpec(spec) where
 
-module Main(main) where
+import Foundation
 
 import Test.Hspec
 import Test.Hspec.Wai
 import Test.Hspec.Wai.Matcher
 
-import           Control.Arrow        (first)
 import           Control.Monad        (forM_)
 import           Data.Aeson
 import qualified Data.ByteString      as B
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.CaseInsensitive as CI
+import           Data.List
 import           Data.Maybe           (fromMaybe)
 import qualified Data.Text            as T
 import           Data.Text.Encoding   (decodeUtf8, encodeUtf8)
 import           Network.HTTP.Types
 import           Network.Wai          (Application)
 import           Network.Wai.Test     hiding (request)
+import qualified Prelude
 import qualified Web.Scotty           as S
 
 import Echo
-
-main :: IO ()
-main = hspec spec
 
 app :: IO Application
 app = S.scottyApp Echo.routes
@@ -58,7 +56,7 @@ spec = with app $
       payload = object ["foo" .= ("bar" :: T.Text)]
       extraHeaders = [("echo-extra-header", "foo")] :: [(B.ByteString, B.ByteString)]
 
-methods :: [(B.ByteString, B.ByteString)] -> LB.ByteString -> [(String, B.ByteString -> WaiSession SResponse)]
+methods :: [(B.ByteString, B.ByteString)] -> LB.ByteString -> [(Prelude.String, B.ByteString -> WaiSession SResponse)]
 methods headers payload =
   let
     r method = req method headers payload

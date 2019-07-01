@@ -13,7 +13,7 @@ cliParser = CLI
     ( long "port"
     <> help "Specify the port to use"
     <> showDefault
-    <> value 3000
+    <> value 4000
     <> metavar "INT"
     )
 

@@ -2,13 +2,20 @@ module Main(main) where
 
 import Foundation
 
-import           Options.Applicative
-import qualified Web.Scotty          as S
+import Data.Default                         (def)
+import Network.Wai.Middleware.RequestLogger (IPAddrSource (FromHeader),
+                                             OutputFormat (Apache),
+                                             mkRequestLogger, outputFormat)
+import Options.Applicative                  (execParser)
+import Web.Scotty                           (middleware, scotty)
 
-import CommandLine
+import CommandLine (cliInfo, port)
 import Echo
 
 main :: IO ()
 main = do
   cli <- execParser cliInfo
-  S.scotty (port cli) Echo.routes
+  logger <- mkRequestLogger def { outputFormat = Apache FromHeader }
+  scotty (port cli) $ do
+    middleware logger
+    Echo.routes

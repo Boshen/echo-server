@@ -18,10 +18,10 @@ spec =
       check ["--foo", "3000"] `shouldBe` Nothing
 
     it "should give default port" $
-      check [] `shouldBe` Just (CLI { port = 3000})
+      check [] `shouldBe` Just (CLI { port = 4000})
 
     it "should parse port" $
-      check ["--port", "4000"] `shouldBe` Just (CLI { port = 4000})
+      check ["--port", "9000"] `shouldBe` Just (CLI { port = 9000})
 
 check :: [Prelude.String] -> Maybe CLI
 check = getParseResult . execParserPure defaultPrefs cliInfo

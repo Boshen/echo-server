@@ -12,10 +12,12 @@ dependencies:
   - foundation >= 0.0.23
   - aeson
   - case-insensitive
+  - data-default
   - http-types
+  - optparse-applicative
   - scotty
   - text
-  - optparse-applicative
+  - wai-extra
 
 library:
   source-dirs: lib
@@ -40,5 +42,4 @@ tests:
       - hspec
       - hspec-wai
       - wai
-      - wai-extra
       - bytestring

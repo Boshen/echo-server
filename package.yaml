@@ -15,6 +15,7 @@ dependencies:
   - http-types
   - scotty
   - text
+  - optparse-applicative
 
 library:
   source-dirs: lib

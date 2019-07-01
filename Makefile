@@ -10,7 +10,7 @@ build:
 	cabal new-build
 
 run:
-	cabal new-run echo-server
+	cabal new-run echo-server -- --port 9000
 
 test:
 	cabal new-run spec
